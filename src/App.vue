@@ -1,7 +1,14 @@
 <template>
   <div id="app">
+    <notifications position="top center"/>
     <navbar></navbar>
-    <router-view></router-view>
+    <div class="container py-2">
+      <div class="card border-0 shadow mt-5">
+        <div class="card-body p-5">
+          <router-view @fetchData="fetchProfileAndRepo"></router-view>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -12,11 +19,37 @@ export default {
   name: "app",
   components: {
     Navbar
+  },
+  methods: {
+    fetchProfileAndRepo: async function(username) {
+      this.loading = true;
+      await this.$http.all([
+          this.$http.get(`https://api.github.com/users/${username}`),
+          this.$http.get(`https://api.github.com/users/${username}/repos`),
+        ])
+        .then(this.$http.spread((responseOne, responseTwo) => {
+          this.$store.dispatch('updateProfileAction', responseOne.data)
+          this.$store.dispatch('updateRepoAction', responseTwo.data)
+          // this.$router.push({ path: `/${username}` })
+        }))
+        .catch(error => {
+          this.error = true
+          this.$notify({
+            type: 'error',
+            title: error,
+            text: error.response.data.message
+          });
+        })
+        .finally(() => {
+          this.loading = false
+          this.error = false
+        })
+    },
   }
 };
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -30,5 +63,13 @@ export default {
   background-size: cover;
   -o-background-size: cover;
   min-height: calc(100vh - 56px);
+  & > .container {
+    .card {
+      min-height: calc(100vh - 160px);
+    }
+    .h-100 {
+      min-height: 100%;
+    }
+  }
 }
 </style>
