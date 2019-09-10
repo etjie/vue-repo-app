@@ -20,7 +20,8 @@ Vue.prototype.$moment = moment
 Vue.config.productionTip = false
 
 const router = new VueRouter({
-  routes
+  routes,
+  mode: 'history'
 })
 
 new Vue({

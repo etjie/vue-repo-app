@@ -3,6 +3,7 @@ const express = require('express')
 const app = express() 
 const ip = require("ip")
 
+/* eslint-disable no-console */
 console.log(' ')
 console.log('App running at:')
 app.use(express.static('dist'))

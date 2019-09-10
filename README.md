@@ -1,6 +1,24 @@
+
 # vue-repo-app
 
-## Project setup
+Simple Vue.js web application, to list Github project from user and view its README file. 
+
+Based on [Vue CLI 3](https://cli.vuejs.org), standard tooling for Vue.js development.
+
+#### Requirement:
+You must have:
+* Node.js version 8.x and above.
+* Yarn version 1.14.x and above.
+
+Installed in your machine.
+
+## Quick Start
+```
+yarn run start
+```
+or
+
+## Project Setup
 ```
 yarn install
 ```

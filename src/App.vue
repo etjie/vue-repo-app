@@ -61,7 +61,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 56px;
-  background: url("https://source.unsplash.com/twukN12EN7c/1920x1080") no-repeat
+  background: url('./assets/photo-1500964757637-c85e8a162699.jpeg') no-repeat
     center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
