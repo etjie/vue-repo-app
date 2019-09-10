@@ -7,7 +7,7 @@
             <strong>GitHub Username:</strong>
           </label>
         </div>
-        <div class="col-9">
+        <div class="col">
           <input
             type="text"
             class="form-control"
@@ -18,9 +18,12 @@
             @focus="onFocus"
           />
         </div>
-        <div class="col-3">
+        <div class="col-4">
           <template v-if="loading">
-            <button type="submit" class="btn btn-primary btn-block" disabled aria-disabled="true">Submit</button>
+            <button class="btn btn-primary btn-block" type="button" disabled>
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Loading...
+            </button>
           </template>
           <template v-else>
             <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -28,68 +31,49 @@
         </div>
       </div>
     </form>
-    {{ repo }}
   </div>
 </template>
 
 <script>
-
 export default {
   name: "search-form",
   data() {
     return {
-      username: null,
-      loading: false,
-      error: false,
+      username: null
     };
+  },
+  mounted: function() {
+    this.$store.dispatch("updateErrorAction", false);
   },
   methods: {
     onFocus: function() {
-      this.error = false;
+      this.$store.dispatch('updateErrorAction', false)
     },
     handleSubmit: function() {
       if (this.username) {
-        this.fetchProfileAndRepo(this.username);
+        this.$emit("fetchData", this.username);
       } else {
-        this.error = true
+        this.$store.dispatch('updateErrorAction', true)
         this.$notify({
-          type: 'error',
-          title: 'Oops! Something went wrong.',
-          text: 'Username is not valid or empty. Please check username again.'
+          type: "error",
+          title: "Oops! Something went wrong.",
+          text: "Username is not valid or empty. Please check username again."
         });
       }
-    },
-    fetchProfileAndRepo: async function(username) {
-      this.loading = true;
-      await this.$http.all([
-          this.$http.get(`https://api.github.com/users/${username}`),
-          this.$http.get(`https://api.github.com/users/${username}/repos`),
-        ])
-        .then(this.$http.spread((responseOne, responseTwo) => {
-          this.$store.dispatch('updateProfileAction', responseOne.data)
-          this.$store.dispatch('updateRepoAction', responseTwo.data)
-          this.$router.push({ path: `/${username}` })
-        }))
-        .catch(error => {
-          this.error = true
-          this.$notify({
-            type: 'error',
-            title: error,
-            text: error.response.data.message
-          });
-        })
-        .finally(() => {
-          this.loading = false
-          this.error = false
-        })
     }
   },
   computed: {
     repo: function() {
-      return this.$store.getters.repo
+      return this.$store.getters.repo;
     },
-    profile: function () {
-      return this.$store.getters.profile
+    profile: function() {
+      return this.$store.getters.profile;
+    },
+    loading: function() {
+      return this.$store.getters.loading;
+    },
+    error: function() {
+      return this.$store.getters.error;
     }
   }
 };

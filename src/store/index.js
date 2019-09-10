@@ -7,6 +7,8 @@ export const store = new Vuex.Store({
     state: {
         repo: null,
         profile: null,
+        loading: null,
+        error: null,
     },
 
     mutations: {
@@ -15,6 +17,12 @@ export const store = new Vuex.Store({
         },
         updateRepo (state, payload) {
             state.repo = payload
+        },
+        updateLoading (state, payload) {
+            state.loading = payload
+        },
+        updateError (state, payload) {
+            state.error = payload
         }
     },
 
@@ -24,6 +32,12 @@ export const store = new Vuex.Store({
         },
         updateRepoAction ({commit}, payload) {
             commit('updateRepo', payload)
+        },
+        updateLoadingAction ({commit}, payload) {
+            commit('updateLoading', payload)
+        },
+        updateErrorAction ({commit}, payload) {
+            commit('updateError', payload)
         }
     },
 
@@ -33,6 +47,12 @@ export const store = new Vuex.Store({
         },
         repo (state) {
             return state.repo
+        },
+        loading (state) {
+            return state.loading
+        },
+        error (state) {
+            return state.error
         }
     }
 })

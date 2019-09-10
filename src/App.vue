@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <notifications position="top center"/>
+    <notifications position="top center" class="notif" />
     <navbar></navbar>
     <div class="container py-2">
-      <div class="card border-0 shadow mt-5">
+      <div class="card border-0 shadow my-5">
         <div class="card-body p-5">
           <router-view @fetchData="fetchProfileAndRepo"></router-view>
         </div>
@@ -22,29 +22,33 @@ export default {
   },
   methods: {
     fetchProfileAndRepo: async function(username) {
-      this.loading = true;
-      await this.$http.all([
+      this.$store.dispatch("updateLoadingAction", true);
+      await this.$http
+        .all([
           this.$http.get(`https://api.github.com/users/${username}`),
-          this.$http.get(`https://api.github.com/users/${username}/repos`),
+          this.$http.get(`https://api.github.com/users/${username}/repos`)
         ])
-        .then(this.$http.spread((responseOne, responseTwo) => {
-          this.$store.dispatch('updateProfileAction', responseOne.data)
-          this.$store.dispatch('updateRepoAction', responseTwo.data)
-          // this.$router.push({ path: `/${username}` })
-        }))
+        .then(
+          this.$http.spread((responseOne, responseTwo) => {
+            this.$store.dispatch("updateProfileAction", responseOne.data);
+            this.$store.dispatch("updateRepoAction", responseTwo.data);
+            if (this.$route.path === "/") {
+              this.$router.push({ path: `/${username}` });
+            }
+          })
+        )
         .catch(error => {
-          this.error = true
+          this.$store.dispatch("updateErrorAction", true);
           this.$notify({
-            type: 'error',
+            type: "error",
             title: error,
             text: error.response.data.message
           });
         })
         .finally(() => {
-          this.loading = false
-          this.error = false
-        })
-    },
+          this.$store.dispatch("updateLoadingAction", false);
+        });
+    }
   }
 };
 </script>
@@ -57,7 +61,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 56px;
-  background: url('https://source.unsplash.com/twukN12EN7c/1920x1080') no-repeat center center fixed;
+  background: url("https://source.unsplash.com/twukN12EN7c/1920x1080") no-repeat
+    center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
@@ -70,6 +75,12 @@ export default {
     .h-100 {
       min-height: 100%;
     }
+  }
+  .notif {
+    top: 20px !important;
+  }
+  .list-group-item:last-child {
+    margin-bottom: 0 !important;
   }
 }
 </style>

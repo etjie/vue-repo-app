@@ -1,11 +1,17 @@
 import Home from './containers/Home.vue';
 import Project from './containers/Project.vue';
-import About from './containers/About.vue';
+import Detail from './containers/Detail.vue';
 
 const routes = [
-    {path: '/', name: 'index', component: Home},
-    {path: '/:username', name: 'project', component: Project},
-    {path: '/about/', name: 'about', component: About},
+    {path: '/', name: 'main', component: Home, meta: {
+        title: 'Homepage - Find Repos'
+    }},
+    {path: '/:username', name: 'project', component: Project, meta: {
+        title: 'Project - View all projects'
+    }},
+    {path: '/:username/:repo', name: 'detail', component: Detail, meta: {
+        title: 'Detail - View project README.md and contents.'
+    }},
 ]
 
 export default routes;
